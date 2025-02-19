@@ -7,7 +7,6 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { 
     useGetOrderDetailsQuery,
-    useCreateOrderMutation,
     useDeliverOrderMutation,
    } from '../slices/orderApiSlice';
 
@@ -22,22 +21,20 @@ const OrderScreen = () => {
          error 
         } = useGetOrderDetailsQuery(orderId);
 
-    const [payOrder, { isLoading: LoadingPay }] = useCreateOrderMutation();
-
     const [deliverOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
 
     const { userInfo } = useSelector((state) => state.auth);
 
-    async function onApproveTest() {
-      await payOrder ({ orderId, details: { payer: {} } });
-      refetch();
-      toast.success('payment success');
-    };
-
     const deliverHandler = async () => {
-      await deliverOrder(orderId);
-      refetch();
+      try {
+        await deliverOrder(orderId);
+        refetch();
+        toast.success('Order deliverd')
+      } catch (err) {
+        toast.error(err?.data?.message || err.message)
+      }
+      
     };
 
 
@@ -151,38 +148,25 @@ const OrderScreen = () => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              
-              { !order.isPaid && (
-                <ListGroup.Item>
-                  {LoadingPay && <Loader />}
+    
 
-                  <div>
-                    <Button 
-                    onClick={ onApproveTest } 
-                    style={{ marginBottom: '10px' }}
-                    >test pay order</Button>
-                  </div>
-                  
-                </ListGroup.Item>
-              )}
+              {loadingDeliver && <Loader />}
 
-                   {loadingDeliver && <Loader />}
-
-                   {userInfo &&
-                   userInfo.isAdmin &&
-                   order.isPaid &&
-                   !order.isDelivered && (
-                    <ListGroup.Item>
-                      <Button
-                        type='button'
-                        className='btn btn-block'
-                        onClick={deliverHandler}
-                      >
-                        Mark As Delivered
-                      </Button>
-                    </ListGroup.Item>
-                   )}
-              </ListGroup>
+              {userInfo &&
+              userInfo.isAdmin &&
+              order.isPaid &&
+              !order.isDelivered && (
+              <ListGroup.Item>
+              <Button
+              type='button'
+              className='btn btn-block'
+              onClick={deliverHandler}
+              >
+               Mark As Delivered
+              </Button>
+              </ListGroup.Item>
+          )}
+        </ListGroup>
               </Card>
             </Col>
         </Row>
