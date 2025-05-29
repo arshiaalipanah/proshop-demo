@@ -25,7 +25,7 @@ An eCommerce platform built with the MERN stack, featuring user authentication, 
 ├── backend/        # Express.js backend 
 ├── frontend/       # React frontend
 ├── liara.json      # Deployment configuration 
-├── exapmle.env     # Environment variables example 
+├── example.env     # Environment variables example 
 ├── package.json    # Project metadata and scripts
 
 
