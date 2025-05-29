@@ -48,12 +48,14 @@ An eCommerce platform built with the MERN stack, featuring user authentication, 
 2. Install backend dependencies:
 
 cd backend
+
 npm install
 
 
 3. Install frontend dependencies:
 
-cd ../frontend
+cd frontend
+
 npm install
 
 
